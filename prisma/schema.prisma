@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://helpuser:helppass@localhost:3400/helpdesk"
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,14 @@
+### GET request with a header
+GET http://localhost:3000
+Accept: application/json#
+
+### POST request with a header
+POST http://localhost:3000
+Accept: application/json
+Content-type: application/json
+
+{
+  "email": "ciao@mail.it",
+  "content" : "creator"
+}
+
