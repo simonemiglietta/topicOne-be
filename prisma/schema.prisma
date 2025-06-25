@@ -4,13 +4,28 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://helpuser:helppass@localhost:3400/helpdesk"
+  url      = env("DATABASE_URL")
+}
+
+model Thread {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  keywords  String?   @db.Text
+  messages  Message[]
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
+  id        String    @id @default(cuid())
   content   String
   email     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  keywords  String?   @db.Text
+  threadId  String
+  replyToId String?
+  // relations
+  thread    Thread    @relation(fields: [threadId], references: [id])
+  replyTo   Message?  @relation("ReplyTo", fields: [replyToId], references: [id])
+  replies   Message[] @relation("ReplyTo")
 }

@@ -9,6 +9,7 @@ Content-type: application/json
 
 {
   "email": "ciao@mail.it",
-  "content" : "creator"
+  "content" : "ciao a tutti ragazzi, di che parla questo topic?",
+  "threadId" : "2"
 }
 
