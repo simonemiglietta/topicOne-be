@@ -1,5 +1,6 @@
 import {prisma} from '../prisma';
-import {MessageExtractor} from "../entities/extractor.entity";
+import {eventBus, Events} from "../events/eventBus";
+import {IKeywordExtractor} from "../interfaces/extractor.interface";
 
 interface CreateMessageData {
     email: string;
@@ -7,24 +8,25 @@ interface CreateMessageData {
     threadId: string;
 }
 
-export const createMessage = async ({ email, content, threadId }: CreateMessageData) => {
-    const message = await prisma.message.create({
-        data: {
-            email,
-            content,
-            thread: {
-                connect: { id: threadId },
+export class MessageService {
+    constructor(
+        protected iKeywordExtractor: IKeywordExtractor
+    ) {
+    }
+
+    createMessage = async ({email, content, threadId}: CreateMessageData) => {
+        const message = await prisma.message.create({
+            data: {
+                email,
+                content,
+                thread: {
+                    connect: {id: threadId},
+                },
             },
-        },
-    });
-
-    (async () => {
-        const keywords = new MessageExtractor(content).extractKeywords();
-        await prisma.message.update({
-            where: { id: message.id },
-            data: { keywords: keywords.join(',') },
         });
-    })().catch(console.error);
+        eventBus.emit(Events.MessageKeywordsUpdate, message, this.iKeywordExtractor);
 
-    return message;
-};
+        return message;
+    };
+
+}

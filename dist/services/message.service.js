@@ -9,27 +9,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createMessage = void 0;
+exports.MessageService = void 0;
 const prisma_1 = require("../prisma");
-const extractor_entity_1 = require("../entities/extractor.entity");
-const createMessage = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, content, threadId }) {
-    const message = yield prisma_1.prisma.message.create({
-        data: {
-            email,
-            content,
-            thread: {
-                connect: { id: threadId },
-            },
-        },
-    });
-    (() => __awaiter(void 0, void 0, void 0, function* () {
-        const keywords = new extractor_entity_1.MessageExtractor(content).extractKeywords();
-        yield prisma_1.prisma.message.update({
-            where: { id: message.id },
-            data: { keywords: keywords.join(',') },
+const eventBus_1 = require("../events/eventBus");
+class MessageService {
+    constructor(iKeywordExtractor) {
+        this.iKeywordExtractor = iKeywordExtractor;
+        this.createMessage = (_a) => __awaiter(this, [_a], void 0, function* ({ email, content, threadId }) {
+            const message = yield prisma_1.prisma.message.create({
+                data: {
+                    email,
+                    content,
+                    thread: {
+                        connect: { id: threadId },
+                    },
+                },
+            });
+            eventBus_1.eventBus.emit(eventBus_1.Events.MessageKeywordsUpdate, message, this.iKeywordExtractor);
+            return message;
         });
-    }))().catch(console.error);
-    return message;
-});
-exports.createMessage = createMessage;
+    }
+}
+exports.MessageService = MessageService;
 //# sourceMappingURL=message.service.js.map

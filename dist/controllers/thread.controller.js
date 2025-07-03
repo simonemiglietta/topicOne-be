@@ -9,28 +9,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMessage = exports.createMessage = exports.getMessages = void 0;
+exports.deleteMessage = exports.createThread = exports.showThread = exports.indexThreads = void 0;
 const prisma_1 = require("../prisma");
-const notfound_exception_1 = require("../exceptions/notfound.exception");
-const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const messages = yield prisma_1.prisma.message.findMany();
+;
+const indexThreads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const messages = yield prisma_1.prisma.thread.findMany();
     res.json(messages);
 });
-exports.getMessages = getMessages;
-const createMessage = (messageService) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { content, email, threadId } = req.body;
-    const thread = yield prisma_1.prisma.thread.findUnique({ where: { id: threadId } });
-    if (!thread) {
-        throw new notfound_exception_1.NotFoundException('Thread', threadId);
-    }
-    const message = yield messageService.createMessage({ email, content, threadId });
+exports.indexThreads = indexThreads;
+const showThread = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const messages = yield prisma_1.prisma.thread.findUnique({ where: { id: id } });
+    res.json(messages);
+});
+exports.showThread = showThread;
+const createThread = (threadService) => (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { content, email, subject } = req.body;
+    const message = yield threadService.createThread({ email, content, subject });
     return res.status(201).json(message);
 });
-exports.createMessage = createMessage;
+exports.createThread = createThread;
 const deleteMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     yield prisma_1.prisma.message.delete({ where: { id: String(id) } });
     res.status(204).send();
 });
 exports.deleteMessage = deleteMessage;
-//# sourceMappingURL=message.controller.js.map
+//# sourceMappingURL=thread.controller.js.map

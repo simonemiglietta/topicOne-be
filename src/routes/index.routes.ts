@@ -2,10 +2,17 @@ import {Router} from 'express';
 import {createMessage, getMessages} from '../controllers/message.controller';
 import {validate} from "../middlewares/validates";
 import {createMessageSchema} from "../schemas/message.schema";
+import {createThreadSchema} from "../schemas/thread.schema";
+import {createThread} from "../controllers/thread.controller";
+import {MessageContainer} from "../containers/message.container";
 
-const router = Router();
+export default function createRoutes(container: MessageContainer) {
+    const router = Router();
 
-router.get('/',getMessages);
-router.post('/',validate(createMessageSchema), createMessage);
+    router.get('/messages', getMessages);
+    router.post('/messages', validate(createMessageSchema), createMessage(container.messageService));
 
-export default router;
+    router.post('/thread', validate(createThreadSchema), createThread(container.threadService));
+
+    return router;
+}

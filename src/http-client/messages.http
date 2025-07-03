@@ -1,15 +1,26 @@
-### GET request with a header
+### GET
 GET http://localhost:3000
 Accept: application/json#
 
-### POST request with a header
-POST http://localhost:3000
+### POST message
+POST http://localhost:3000/messages
 Accept: application/json
 Content-type: application/json
 
 {
   "email": "ciao@mail.it",
-  "content" : "ciao a tutti ragazzi, di che parla questo topic?",
-  "threadId" : "2"
+  "content" : "Il progresso tecnologico sta trasformando rapidamente ogni aspetto della nostra vita quotidiana. Dalle comunicazioni digitali ai trasporti intelligenti, l’innovazione genera nuove opportunità e sfide. Le aziende investono risorse significative per sviluppare soluzioni che migliorino l’efficienza e soddisfino le esigenze dei consumatori moderni. La formazione continua diventa indispensabile per affrontare la complessità crescente dei mercati globali. Allo stesso tempo, la sostenibilità ambientale impone un ripensamento delle strategie produttive e dei modelli di consumo. La collaborazione tra istituzioni, imprese e cittadini favorisce la diffusione di pratiche responsabili. La creatività, unita alla conoscenza, è la chiave per costruire un futuro prospero e inclusivo.",
+  "threadId" : "cmcf9pgzd0000jngcbjj5twsy"
+}
+
+### POST thread
+POST http://localhost:3000/thread
+Accept: application/json
+Content-type: application/json
+
+{
+  "email": "ciao@mail.it",
+  "subject" : "ciao a tutti ragazzi?",
+  "content" : "di che parla questo topic?"
 }
 
